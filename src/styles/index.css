@@ -10,3 +10,12 @@
     import 'relative/path/to/stylesheet.scss';
 
 */
+.todo {
+    font-size: 7.5rem;
+    color: black;
+    opacity: 25%;
+}
+
+.cuadro {
+    box-shadow: 10px 10px 5px 0px rgba(156,156,156,0.6);
+}
