@@ -34,14 +34,25 @@ const ToDoList = () => {
 		}
 	}
 
-	const handleDelete = (index) => {
-		setTaskList(taskList.filter((_tarea, indiceABorrar)=> (index != indiceABorrar)))
+	const handleDelete = async (index, id) => {
+        const borrar = await fetch('https://playground.4geeks.com/todo/todos/' + id, {
+            method: "DELETE",
+        }) 
+        if (borrar.ok) {
+              setTaskList(taskList.filter((_tarea, indiceABorrar)=> (index != indiceABorrar)))
+          }
 	}
 
     const loadTasks = async () => {
         const response = await fetch('https://playground.4geeks.com/todo/users/Anguibell')
+        if (!response.ok) {
+            await fetch('https://playground.4geeks.com/todo/users/Anguibell', {
+                method: "POST"
+                }
+              ); loadTasks()
+        }
         const data = await response.json()
-        setTaskList(data.taskList)
+        setTaskList(data.todos)
     }
 
     useEffect(()=>{
@@ -54,9 +65,9 @@ const ToDoList = () => {
             onChange={(event) => setNewTask(event.target.value)} 
             onKeyUp={(event) => handleKeyPress(event) }/>
 
-            {(taskList.length == 0) && <div className="py-3 px-5 fs-4">No tasks, add a task</div>}
-            {taskList.map( (tarea, index) => <Task task={tarea} key={index} onRemove={()=>handleDelete()} />)}
-            <p className="my-0 p-2 text-black-50">{taskList.length} items left</p>
+            {(taskList && taskList.length == 0) && <div className="py-3 px-5 fs-4">No tasks, add a task</div>}
+            {taskList && taskList.map( (tarea, index) => <Task task={tarea} key={index} onRemove={()=>handleDelete(index, tarea.id)} />)}
+            <p className="my-0 p-2 text-black-50">{taskList && taskList.length} items left</p>
         </div>
     )
 }
